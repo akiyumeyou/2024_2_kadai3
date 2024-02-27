@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>シニア向けメモアプリ</title>
+<link rel="stylesheet" href="css/style.css">
+<link rel="icon" type="image/x-icon" href="img/favicon.ico">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</head>
+<body>
+<div class="wrapper"
+<header>
+
+<h1>ちょこっとメモ</h1>
+</header>
+
+<div id="app">
+  <input type="text" id="newMemo" placeholder="メモを入力">
+  <select id="priority">
+    <option value="high">高</option>
+    <option value="medium" selected>中</option>
+    <option value="low">低</option>
+  </select>
+
+
+  <button id="addMemo">追加</button>
+  <ul id="memoList"></ul>
+  <button id="sortByInput">入力順</button>
+  <button id="sortByUrgency">急ぎ順</button>
+<br>
+</div>
+
+<footer class="footer">
+<img src="img/logo.png" alt="potz" class="logo"> 
+<a href="https://potz.jp/">https://potz.jp/</a>
+</footer>
+
+<script>
+// メモアプリのロジック
+$(document).ready(function() {
+    // メモをローカルストレージから読み込む
+    loadMemos();
+
+    // メモの追加
+    $('#addMemo').click(function(){
+        const memoText = $('#newMemo').val();
+        const priority = $('#priority').val();
+        if (memoText) {
+            const timestamp = new Date().toISOString();
+            const memo = { text: memoText, priority: priority, timestamp: timestamp };
+            saveMemo(memo);
+            addMemoToList(memo);
+            $('#newMemo').val(''); // 入力フィールドをクリア
+        }
+    });
+
+    // 入力順に並べ替え
+    $('#sortByInput').click(function() {
+        $('#memoList').empty();
+        const memos = getMemos();
+        memos.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
+        memos.forEach(addMemoToList);
+    });
+
+    // 急ぎ順に並べ替え
+    $('#sortByUrgency').click(function() {
+        $('#memoList').empty();
+        const memos = getMemos();
+        const priorityOrder = { high: 3, medium: 2, low: 1 };
+        memos.sort((a, b) => priorityOrder[a.priority] - priorityOrder[b.priority]);
+        memos.forEach(addMemoToList);
+    });
+});
+
+// メモをリストに追加する関数
+function addMemoToList(memo) {
+    const listItem = $('<li>').text(memo.text);
+    const deleteButton = $('<button>').text('削除').addClass('deleteBtn');
+    deleteButton.click(function() {
+        $(this).parent().remove();
+        deleteMemo(memo.timestamp);
+    });
+    listItem.append(deleteButton);
+    $('#memoList').prepend(listItem);
+}
+
+// メモを保存する関数
+function saveMemo(memo) {
+    const memos = getMemos();
+    memos.push(memo);
+    localStorage.setItem('memos', JSON.stringify(memos));
+}
+
+// メモをローカルストレージから読み込む関数
+function loadMemos() {
+    const memos = getMemos();
+    memos.forEach(addMemoToList);
+}
+
+// メモを取得する関数
+function getMemos() {
+    const memos = localStorage.getItem('memos');
+    return memos ? JSON.parse(memos) : [];
+}
+
+// メモを削除する関数
+function deleteMemo(timestamp) {
+    let memos = getMemos();
+    memos = memos.filter(memo => memo.timestamp !== timestamp);
+    localStorage.setItem('memos', JSON.stringify(memos));
+}
+
+
+</script>
+</body>
+</html>
