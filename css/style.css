@@ -3,7 +3,7 @@ body {
   height:100%;
 
   font-size: 18px;
-  background-image: url('/img/kaimono.jpg'); /* 背景画像を追加 */
+  background-image: url('/../kaimono.jpg'); /* 背景画像を追加 */
   background-size: cover;
   margin: 0;
   padding: 0;
