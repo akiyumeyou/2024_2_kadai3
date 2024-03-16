@@ -41,6 +41,12 @@ footer{
   padding: 30px;
 }
 
+#newMemo{
+  width: 80%;
+  margin: 0 auto;
+  padding: 20px;
+}
+
 #memoList li {
   background-color: #f0f8f0; /* 薄いグリーンに修正 */
   margin: 10px 0;
